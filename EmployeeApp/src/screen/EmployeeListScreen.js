@@ -57,8 +57,20 @@ export default function EmployeeListScreen({
   };
 
   const onLogout = () => {
-    logout();
-    navigation.replace('Login');
+    Alert.alert('Confirm Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: () => {
+          logout();
+          navigation.replace('Login');
+        },
+      },
+    ]);
   };
 
   const filteredEmployees = employees.filter((employee) =>
