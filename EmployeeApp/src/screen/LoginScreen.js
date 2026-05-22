@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { login, setConnectionConfig } from '../services/odooApi';
 
 export default function LoginScreen({ navigation, route }) {
@@ -32,35 +33,41 @@ export default function LoginScreen({ navigation, route }) {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20, justifyContent: 'center' }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Login to Odoo</Text>
+    <LinearGradient
+      colors={['#0066cc', '#00b894']}
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+      }}>
+      <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 24, color: 'white' }}>Login to Odoo</Text>
 
       <TextInput
         placeholder="Odoo JSON-RPC URL"
         value={baseUrl}
         onChangeText={setBaseUrl}
-        style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 12 }}
+        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 15 }}
         autoCapitalize="none"
       />
       <TextInput
         placeholder="Database"
         value={db}
         onChangeText={setDb}
-        style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 12 }}
+        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 15 }}
         autoCapitalize="none"
       />
       <TextInput
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
-        style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 12 }}
+        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 15 }}
         autoCapitalize="none"
       />
       <TextInput
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
-        style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 20 }}
+        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 20 }}
         secureTextEntry
       />
 
@@ -68,15 +75,15 @@ export default function LoginScreen({ navigation, route }) {
         onPress={onLogin}
         disabled={loading}
         style={{
-          backgroundColor: loading ? '#9ca3af' : '#2563eb',
-          padding: 14,
-          borderRadius: 8,
+          backgroundColor: loading ? '#9ca3af' : '#111',
+          padding: 15,
+          borderRadius: 15,
           alignItems: 'center',
         }}>
         <Text style={{ color: 'white', fontWeight: '600' }}>
           {loading ? 'Logging in...' : 'Login'}
         </Text>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 }

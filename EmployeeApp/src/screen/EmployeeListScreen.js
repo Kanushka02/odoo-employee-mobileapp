@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
+import { Ionicons } from '@expo/vector-icons';
+
+import { useColorScheme } from 'react-native';
+
+import {
+  lightTheme,
+  darkTheme,
+} from '../styles/theme';
 import {
   ActivityIndicator,
   Alert,
   View,
   Text,
   FlatList,
+  Modal,
   RefreshControl,
   TouchableOpacity,
   TextInput,
@@ -23,6 +33,9 @@ export default function EmployeeListScreen({
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [logoutDialogVisible, setLogoutDialogVisible] = useState(false);
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener(
@@ -57,20 +70,13 @@ export default function EmployeeListScreen({
   };
 
   const onLogout = () => {
-    Alert.alert('Confirm Logout', 'Are you sure you want to logout?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Logout',
-        style: 'destructive',
-        onPress: () => {
-          logout();
-          navigation.replace('Login');
-        },
-      },
-    ]);
+    setLogoutDialogVisible(true);
+  };
+
+  const confirmLogout = () => {
+    setLogoutDialogVisible(false);
+    logout();
+    navigation.replace('Login');
   };
 
   const filteredEmployees = employees.filter((employee) =>
@@ -78,39 +84,113 @@ export default function EmployeeListScreen({
   );
 
   return (
-    <View style={{ flex: 1, padding: 20, backgroundColor: '#fff' }}>
-      <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            backgroundColor: '#16a34a',
-            padding: 14,
-            borderRadius: 10,
-          }}
-          onPress={() => navigation.navigate('AddEmployee')}>
-          <Text
-            style={{
-              color: 'white',
-              textAlign: 'center',
-              fontWeight: 'bold',
-            }}>
-            Add Employee
-          </Text>
-        </TouchableOpacity>
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: theme.background,
+      }}>
+      <Modal
+        transparent
+        visible={logoutDialogVisible}
+        animationType="fade"
+        onRequestClose={() => setLogoutDialogVisible(false)}>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.45)', justifyContent: 'center', padding: 24 }}>
+          <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20 }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 8 }}>
+              Confirm Logout
+            </Text>
+            <Text style={{ color: '#4b5563', marginBottom: 20 }}>
+              Are you sure you want to logout?
+            </Text>
 
-        <TouchableOpacity
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  paddingVertical: 12,
+                  borderRadius: 10,
+                  backgroundColor: '#e5e7eb',
+                }}
+                onPress={() => setLogoutDialogVisible(false)}>
+                <Text style={{ textAlign: 'center', fontWeight: '600', color: '#111827' }}>
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  paddingVertical: 12,
+                  borderRadius: 10,
+                  backgroundColor: '#dc2626',
+                }}
+                onPress={confirmLogout}>
+                <Text style={{ textAlign: 'center', fontWeight: '600', color: '#fff' }}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <LinearGradient
+        colors={['#0066cc', '#00b894']}
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          marginBottom: 20,
+        }}>
+        <View
           style={{
-            backgroundColor: '#dc2626',
-            padding: 14,
-            borderRadius: 10,
-            justifyContent: 'center',
-          }}
-          onPress={onLogout}>
-          <Text style={{ color: 'white', fontWeight: 'bold' }}>
-            Logout
-          </Text>
-        </TouchableOpacity>
-      </View>
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <View>
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: 'bold',
+                color: 'white',
+              }}>
+              Employees
+            </Text>
+
+            <Text style={{ color: 'white' }}>
+              Employee Management System
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={onLogout}>
+            <Ionicons
+              name="log-out-outline"
+              size={30}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: theme.secondary,
+          padding: 14,
+          borderRadius: 16,
+          marginBottom: 16,
+        }}
+        onPress={() => navigation.navigate('AddEmployee')}>
+        <Text
+          style={{
+            color: 'white',
+            textAlign: 'center',
+            fontWeight: 'bold',
+          }}>
+          Add Employee
+        </Text>
+      </TouchableOpacity>
 
       <TextInput
         value={searchQuery}
@@ -121,7 +201,9 @@ export default function EmployeeListScreen({
         style={{
           borderWidth: 1,
           borderColor: '#d1d5db',
-          borderRadius: 10,
+          backgroundColor: theme.card,
+          color: theme.text,
+          borderRadius: 15,
           paddingHorizontal: 14,
           paddingVertical: 12,
           marginBottom: 16,
@@ -153,21 +235,61 @@ export default function EmployeeListScreen({
           renderItem={({ item }) => (
             <TouchableOpacity
               style={{
-                backgroundColor: '#f2f2f2',
-                padding: 15,
-                borderRadius: 10,
+                backgroundColor: theme.card,
+                padding: 18,
+                borderRadius: 20,
                 marginBottom: 10,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
               }}
               onPress={() =>
                 navigation.navigate('EditEmployee', {
                   employee: item,
                 })
               }>
-              <Text>Name: {item.name}</Text>
+              <Text style={{ color: theme.text, fontSize: 18, fontWeight: '700' }}>
+                {item.name}
+              </Text>
 
-              <Text>Email: {item.work_email}</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 5,
+                }}>
+                <Ionicons
+                  name="mail-outline"
+                  size={18}
+                  color="gray"
+                />
 
-              <Text>Job: {item.job_title}</Text>
+                <Text style={{ marginLeft: 8, color: theme.text }}>
+                  {item.work_email}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 5,
+                }}>
+                <Ionicons
+                  name="briefcase-outline"
+                  size={18}
+                  color="gray"
+                />
+
+                <Text style={{ marginLeft: 8, color: theme.text }}>
+                  {item.job_title}
+                </Text>
+              </View>
             </TouchableOpacity>
           )}
         />
