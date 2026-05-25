@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Alert,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, Text } from 'react-native';
 import {
   deleteEmployee,
   updateEmployee,
 } from '../services/odooApi';
+import AppButton from '../components/AppButton';
+import AppInput from '../components/AppInput';
+import ScreenShell from '../components/ScreenShell';
+import SectionCard from '../components/SectionCard';
 
 export default function EditEmployeeScreen({
   route,
@@ -84,84 +82,52 @@ export default function EditEmployeeScreen({
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text
-        style={{
-          fontSize: 24,
-          marginBottom: 20,
-          fontWeight: '700',
-        }}>
-        Edit Employee
-      </Text>
-
-      <TextInput
-        placeholder="Employee Name"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
+    <ScreenShell>
+      <SectionCard
+        className="mb-5"
+        eyebrow="Employees"
+        title="Edit Employee"
+        description="Update details or remove the record from Odoo."
       />
 
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        autoCapitalize="none"
-      />
+      <SectionCard className="bg-white/5" title={null} description={null} eyebrow={null}>
+        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Employee details
+        </Text>
 
-      <TextInput
-        placeholder="Job Title"
-        value={job}
-        onChangeText={setJob}
-        style={styles.input}
-      />
+        <AppInput
+          placeholder="Employee Name"
+          value={name}
+          onChangeText={setName}
+        />
 
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: '#2563eb' },
-          loading && { opacity: 0.6 },
-        ]}
-        onPress={handleUpdate}
-        disabled={loading}>
-        <Text style={styles.buttonText}>
+        <AppInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          className="mt-4"
+        />
+
+        <AppInput
+          placeholder="Job Title"
+          value={job}
+          onChangeText={setJob}
+          className="mt-4"
+        />
+
+        <AppButton onPress={handleUpdate} disabled={loading} className="mt-5">
           Update Employee
-        </Text>
-      </TouchableOpacity>
+        </AppButton>
 
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: '#dc2626' },
-          loading && { opacity: 0.6 },
-        ]}
-        onPress={handleDelete}
-        disabled={loading}>
-        <Text style={styles.buttonText}>
+        <AppButton
+          onPress={handleDelete}
+          disabled={loading}
+          variant="danger"
+          className="mt-3">
           Delete Employee
-        </Text>
-      </TouchableOpacity>
-    </View>
+        </AppButton>
+      </SectionCard>
+    </ScreenShell>
   );
 }
-
-const styles = {
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
-    marginBottom: 15,
-    borderRadius: 10,
-  },
-  button: {
-    backgroundColor: 'orange',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-};

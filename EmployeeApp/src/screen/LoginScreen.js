@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Alert, Text, View } from 'react-native';
 import { login, setConnectionConfig } from '../services/odooApi';
+import AppButton from '../components/AppButton';
+import AppInput from '../components/AppInput';
+import ScreenShell from '../components/ScreenShell';
+import SectionCard from '../components/SectionCard';
 
 export default function LoginScreen({ navigation, route }) {
   const scannedConfig = route?.params?.config || {};
@@ -33,57 +36,56 @@ export default function LoginScreen({ navigation, route }) {
   };
 
   return (
-    <LinearGradient
-      colors={['#0066cc', '#00b894']}
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-      }}>
-      <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 24, color: 'white' }}>Login to Odoo</Text>
-
-      <TextInput
-        placeholder="Odoo JSON-RPC URL"
-        value={baseUrl}
-        onChangeText={setBaseUrl}
-        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 15 }}
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Database"
-        value={db}
-        onChangeText={setDb}
-        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 15 }}
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 15 }}
-        autoCapitalize="none"
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        style={{ backgroundColor: 'white', padding: 15, borderRadius: 15, marginBottom: 20 }}
-        secureTextEntry
+    <ScreenShell>
+      <SectionCard
+        className="mb-8 bg-slate-900/90"
+        eyebrow="Odoo Mobile"
+        title="Login to Odoo"
+        description="Connect to your database and manage employees from a focused, mobile-first dashboard."
       />
 
-      <TouchableOpacity
-        onPress={onLogin}
-        disabled={loading}
-        style={{
-          backgroundColor: loading ? '#9ca3af' : '#111',
-          padding: 15,
-          borderRadius: 15,
-          alignItems: 'center',
-        }}>
-        <Text style={{ color: 'white', fontWeight: '600' }}>
-          {loading ? 'Logging in...' : 'Login'}
+      <SectionCard
+        className="bg-white/5"
+        title={null}
+        description={null}
+        eyebrow={null}
+      >
+        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Connection details
         </Text>
-      </TouchableOpacity>
-    </LinearGradient>
+
+        <AppInput
+          placeholder="Odoo JSON-RPC URL"
+          value={baseUrl}
+          onChangeText={setBaseUrl}
+          autoCapitalize="none"
+        />
+        <AppInput
+          placeholder="Database"
+          value={db}
+          onChangeText={setDb}
+          autoCapitalize="none"
+          className="mt-4"
+        />
+        <AppInput
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+          className="mt-4"
+        />
+        <AppInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          className="mt-4"
+        />
+
+        <AppButton onPress={onLogin} disabled={loading} className="mt-2">
+          {loading ? 'Logging in...' : 'Login'}
+        </AppButton>
+      </SectionCard>
+    </ScreenShell>
   );
 }
