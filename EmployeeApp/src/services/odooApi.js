@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { BASE_URL } from '../config/config';
 
-const DEFAULT_BASE_URL = 'http://10.32.100.93:8069/jsonrpc';
+
 let DEFAULT_DB = '';
 let DEFAULT_USERNAME = null;
 let DEFAULT_PASSWORD = '';
 
-let baseUrl = DEFAULT_BASE_URL;
+let baseUrl = BASE_URL;
 let db = DEFAULT_DB;
 let username = DEFAULT_USERNAME;
 let password = DEFAULT_PASSWORD;
@@ -17,7 +18,7 @@ export const logout = () => {
 };
 
 export const setConnectionConfig = (config = {}) => {
-  baseUrl = config.baseUrl || DEFAULT_BASE_URL;
+  baseUrl = config.baseUrl || BASE_URL;
   db = config.db || DEFAULT_DB;
   username = config.username || DEFAULT_USERNAME;
   password = config.password || DEFAULT_PASSWORD;

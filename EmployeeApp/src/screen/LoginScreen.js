@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Alert, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login, setConnectionConfig } from '../services/odooApi';
 import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
@@ -16,7 +18,24 @@ export default function LoginScreen({ navigation, route }) {
   const [username, setUsername] = useState(scannedConfig.username || '');
   const [password, setPassword] = useState(scannedConfig.password || '');
   const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    loadSavedConfig();
+  }, []);
 
+  const loadSavedConfig = async () => {
+    const saved = await AsyncStorage.getItem(
+      'odoo_config'
+    );
+
+    if (saved) {
+      const config = JSON.parse(saved);
+
+      setBaseUrl(config.baseUrl || '');
+      setDb(config.db || '');
+      setUsername(config.username || '');
+    }
+  };
   const onLogin = async () => {
     if (!baseUrl || !db || !username || !password) {
       Alert.alert('Missing details', 'Please fill all fields before login.');
@@ -27,6 +46,14 @@ export default function LoginScreen({ navigation, route }) {
       setLoading(true);
       setConnectionConfig({ baseUrl, db, username, password });
       await login({ baseUrl, db, username, password });
+      await AsyncStorage.setItem(
+          'odoo_config',
+          JSON.stringify({
+            baseUrl,
+            db,
+            username,
+          })
+        );
       navigation.replace('Employees');
     } catch (error) {
       Alert.alert('Login failed', 'Could not login to Odoo. Check details and try again.');
