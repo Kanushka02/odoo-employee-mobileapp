@@ -2,6 +2,7 @@ import axios from 'axios';
 import { BASE_URL } from '../config/config';
 
 
+
 let DEFAULT_DB = '';
 let DEFAULT_USERNAME = null;
 let DEFAULT_PASSWORD = '';
@@ -78,7 +79,12 @@ export const getEmployees = async () => {
           'search_read',
           [[]],
           {
-            fields: ['name', 'work_email', 'job_title', 'job_id'],
+            fields: [
+              'name',
+              'work_email',
+              'job_title',
+              'image_1920'
+            ],
           },
         ],
       },
@@ -98,7 +104,12 @@ export const getEmployees = async () => {
   }
 };
 
-export const createEmployee = async (name, email, job) => {
+export const createEmployee = async (
+  name,
+  email,
+  job,
+  imageBase64 = false
+) => {
   try {
     const response = await axios.post(baseUrl, {
       jsonrpc: '2.0',
@@ -117,6 +128,8 @@ export const createEmployee = async (name, email, job) => {
               name: name,
               work_email: email,
               job_title: job,
+
+              image_1920: imageBase64,
             },
           ],
         ],
@@ -127,6 +140,7 @@ export const createEmployee = async (name, email, job) => {
     return response.data.result;
   } catch (error) {
     console.log('Create Error:', error);
+    throw error;
   }
 };
 
@@ -135,9 +149,20 @@ export const updateEmployee = async (
   id,
   name,
   email,
-  job
+  job,
+  imageBase64 = false
 ) => {
   try {
+    const values = {
+      name: name,
+      work_email: email,
+      job_title: job,
+    };
+
+    if (imageBase64) {
+      values.image_1920 = imageBase64;
+    }
+
     const response = await axios.post(baseUrl, {
       jsonrpc: '2.0',
       method: 'call',
@@ -152,11 +177,7 @@ export const updateEmployee = async (
           'write',
           [
             [id],
-            {
-              name: name,
-              work_email: email,
-              job_title: job,
-            },
+            values,
           ],
         ],
       },
