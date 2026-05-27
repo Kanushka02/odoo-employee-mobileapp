@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   ActivityIndicator,
@@ -71,6 +72,37 @@ export default function EmployeeListScreen({
   const filteredEmployees = employees.filter((employee) =>
     (employee.name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const renderEmployeeAvatar = (employee) => {
+    const avatarSource = employee.image_1920
+      ? { uri: `data:image/png;base64,${employee.image_1920}` }
+      : null;
+
+    if (avatarSource) {
+      return (
+        <Image
+          source={avatarSource}
+          className="h-16 w-16 rounded-2xl bg-slate-800"
+        />
+      );
+    }
+
+    const initials = (employee.name || '?')
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase();
+
+    return (
+      <View className="h-16 w-16 items-center justify-center rounded-2xl bg-brand-500/15">
+        <Text className="text-lg font-black text-brand-200">
+          {initials || '?'}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <View className="flex-1 bg-slate-950 px-5 pt-4">
@@ -194,19 +226,29 @@ export default function EmployeeListScreen({
           renderItem={({ item }) => (
             <TouchableOpacity
               activeOpacity={0.85}
-              className="mb-3 rounded-[28px] border border-white/10 bg-slate-900 p-5 shadow-xl shadow-black/15"
+              className="mb-3 rounded-[28px] border border-white/10 bg-slate-900 p-4 shadow-xl shadow-black/15"
               onPress={() =>
                 navigation.navigate('EditEmployee', {
                   employee: item,
                 })
               }>
-              <View className="flex-row items-start justify-between">
-                <View className="flex-1 pr-3">
-                  <Text className="text-xl font-bold text-white">
+              <View className="flex-row items-start">
+                {renderEmployeeAvatar(item)}
+
+                <View className="ml-4 flex-1 pr-2">
+                  <View className="flex-row items-start justify-between gap-3">
+                    <View className="flex-1">
+                      <Text
+                        className="text-lg font-bold text-white"
+                        numberOfLines={2}
+                        ellipsizeMode="tail">
                     {item.name}
                   </Text>
 
-                  <Text className="mt-1 text-sm text-slate-400">
+                  <Text
+                        className="mt-1 text-sm text-slate-400"
+                        numberOfLines={2}
+                        ellipsizeMode="tail">
                     {item.job_title || 'No job title set'}
                   </Text>
                 </View>
@@ -218,16 +260,21 @@ export default function EmployeeListScreen({
                 </View>
               </View>
 
-              <View className="mt-4 flex-row items-center">
+              <View className="mt-4 flex-row items-start">
                 <Ionicons
                   name="mail-outline"
                   size={18}
                   color="#94a3b8"
                 />
 
-                <Text className="ml-3 text-sm text-slate-300">
+                <Text
+                      className="ml-3 flex-1 text-sm leading-5 text-slate-300"
+                      numberOfLines={3}
+                      ellipsizeMode="tail">
                   {item.work_email || 'No email set'}
                 </Text>
+                 </View>
+                </View>
               </View>
             </TouchableOpacity>
           )}

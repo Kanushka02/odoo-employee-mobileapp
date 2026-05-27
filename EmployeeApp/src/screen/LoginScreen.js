@@ -12,7 +12,7 @@ export default function LoginScreen({ navigation, route }) {
   const scannedConfig = route?.params?.config || {};
 
   const [baseUrl, setBaseUrl] = useState(
-    scannedConfig.baseUrl || 'http://10.32.100.93:8069/jsonrpc'
+    scannedConfig.baseUrl || 'http://192.168.8.141:8069/jsonrpc'
   );
   const [db, setDb] = useState(scannedConfig.db || '');
   const [username, setUsername] = useState(scannedConfig.username || '');
