@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Text,
@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import { createEmployee } from '../services/odooApi';
+import { Dropdown } from 'react-native-element-dropdown';
 import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
 import ScreenShell from '../components/ScreenShell';
@@ -20,6 +21,8 @@ export default function AddEmployeeScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [job, setJob] = useState('');
   const [image, setImage] = useState(null);
+  const [managerId, setManagerId] = useState(null);
+  const [employees, setEmployees] = useState([]);
 
   const handleAddEmployee = async () => {
     if (!name || !email || !job) {
@@ -32,7 +35,8 @@ export default function AddEmployeeScreen({ navigation }) {
           name,
           email,
           job,
-          image?.base64 || false
+          image?.base64 || false,
+          managerId
         );
       Alert.alert('Success', 'Employee added');
       navigation.goBack();
@@ -54,6 +58,24 @@ export default function AddEmployeeScreen({ navigation }) {
 
   if (!result.canceled) {
     setImage(result.assets[0]);
+  }
+};
+  useEffect(() => {
+  loadEmployees();
+}, []);
+
+const loadEmployees = async () => {
+  try {
+    const data = await getEmployees();
+
+    setEmployees(
+      data.map((emp) => ({
+        label: emp.name,
+        value: emp.id,
+      }))
+    );
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -92,11 +114,39 @@ export default function AddEmployeeScreen({ navigation }) {
           className="mt-4"
         />
 
+        <Text className="mb-2 mt-4 text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Select Manager
+        </Text>
+
+        <Dropdown
+          style={{
+            backgroundColor: '#0f172a',
+            borderRadius: 16,
+            padding: 14,
+            borderWidth: 1,
+            borderColor: '#334155',
+          }}
+          placeholderStyle={{
+            color: '#94a3b8',
+          }}
+          selectedTextStyle={{
+            color: 'white',
+          }}
+          data={employees}
+          labelField="label"
+          valueField="value"
+          placeholder="Choose Manager"
+          value={managerId}
+          onChange={(item) => {
+            setManagerId(item.value);
+          }}
+        />
+
         <TouchableOpacity
           onPress={pickImage}
           className="mt-4 items-center rounded-2xl bg-blue-600 p-4"
         >
-          <Text className="font-semibold text-white">
+        <Text className="font-semibold text-white">
             Select Employee Photo
           </Text>
         </TouchableOpacity>

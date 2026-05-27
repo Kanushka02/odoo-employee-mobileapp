@@ -83,7 +83,9 @@ export const getEmployees = async () => {
               'name',
               'work_email',
               'job_title',
-              'image_1920'
+              'image_1920',
+              'parent_id',
+
             ],
           },
         ],
@@ -108,7 +110,8 @@ export const createEmployee = async (
   name,
   email,
   job,
-  imageBase64 = false
+  imageBase64 = false,
+  managerId = false
 ) => {
   try {
     const response = await axios.post(baseUrl, {
@@ -128,8 +131,8 @@ export const createEmployee = async (
               name: name,
               work_email: email,
               job_title: job,
-
               image_1920: imageBase64,
+              parent_id: managerId || false
             },
           ],
         ],
@@ -150,13 +153,15 @@ export const updateEmployee = async (
   name,
   email,
   job,
-  imageBase64 = false
+  imageBase64 = false,
+  managerId = false
 ) => {
   try {
     const values = {
       name: name,
       work_email: email,
       job_title: job,
+      parent_id: managerId || false,
     };
 
     if (imageBase64) {
