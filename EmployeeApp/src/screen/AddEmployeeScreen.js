@@ -6,10 +6,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import {
-  Image,
-} from 'react-native';
-import { createEmployee } from '../services/odooApi';
+import { Image } from 'react-native';
+import { createEmployee, getEmployees } from '../services/odooApi';
 import { Dropdown } from 'react-native-element-dropdown';
 import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
@@ -23,6 +21,37 @@ export default function AddEmployeeScreen({ navigation }) {
   const [image, setImage] = useState(null);
   const [managerId, setManagerId] = useState(null);
   const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    requestImagePermission();
+    loadEmployees();
+  }, []);
+
+  const requestImagePermission = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permission.status !== 'granted') {
+      Alert.alert(
+        'Photo access needed',
+        'Enable media library access to select an employee photo.'
+      );
+    }
+  };
+
+  const loadEmployees = async () => {
+    try {
+      const data = await getEmployees();
+
+      setEmployees(
+        data.map((emp) => ({
+          label: emp.name,
+          value: emp.id,
+        }))
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleAddEmployee = async () => {
     if (!name || !email || !job) {
@@ -46,38 +75,27 @@ export default function AddEmployeeScreen({ navigation }) {
   };
 
   const pickImage = async () => {
-  const result =
-    await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:
-        ImagePicker.MediaTypeOptions.Images,
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
+    if (permission.status !== 'granted') {
+      Alert.alert(
+        'Permission required',
+        'Please allow photo access to choose an employee image.'
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.7,
       base64: true,
     });
 
-  if (!result.canceled) {
-    setImage(result.assets[0]);
-  }
-};
-  useEffect(() => {
-  loadEmployees();
-}, []);
-
-const loadEmployees = async () => {
-  try {
-    const data = await getEmployees();
-
-    setEmployees(
-      data.map((emp) => ({
-        label: emp.name,
-        value: emp.id,
-      }))
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
+    if (!result.canceled) {
+      setImage(result.assets[0]);
+    }
+  };
 
   return (
     <ScreenShell>
@@ -119,6 +137,17 @@ const loadEmployees = async () => {
         </Text>
 
         <Dropdown
+          containerStyle={{
+            borderRadius: 16,
+            overflow: 'hidden',
+            backgroundColor: '#0f172a',
+            borderWidth: 1,
+            borderColor: '#334155',
+          }}
+          itemContainerStyle={{
+            borderBottomWidth: 1,
+            borderBottomColor: '#1e293b',
+          }}
           style={{
             backgroundColor: '#0f172a',
             borderRadius: 16,
@@ -126,6 +155,7 @@ const loadEmployees = async () => {
             borderWidth: 1,
             borderColor: '#334155',
           }}
+          activeColor="#1e293b"
           placeholderStyle={{
             color: '#94a3b8',
           }}
@@ -146,24 +176,30 @@ const loadEmployees = async () => {
           onPress={pickImage}
           className="mt-4 items-center rounded-2xl bg-blue-600 p-4"
         >
-        <Text className="font-semibold text-white">
+          <Text className="font-semibold text-white">
             Select Employee Photo
           </Text>
         </TouchableOpacity>
 
-          {image && (
-            <Image
-              source={{ uri: image.uri }}
-              style={{
-                width: 120,
-                height: 120,
-                borderRadius: 60,
-                alignSelf: 'center',
-                marginTop: 20,
-                marginBottom: 10,
-              }}
-            />
-          )}
+        {image ? (
+          <Image
+            source={{ uri: image.uri }}
+            style={{
+              width: 120,
+              height: 120,
+              borderRadius: 60,
+              alignSelf: 'center',
+              marginTop: 20,
+              marginBottom: 10,
+            }}
+          />
+        ) : (
+          <View className="mt-4 rounded-2xl border border-dashed border-slate-600 bg-slate-900/70 px-4 py-4">
+            <Text className="text-center text-sm text-slate-400">
+              No photo selected yet.
+            </Text>
+          </View>
+        )}
 
         <AppButton onPress={handleAddEmployee} className="mt-5">
           Add Employee

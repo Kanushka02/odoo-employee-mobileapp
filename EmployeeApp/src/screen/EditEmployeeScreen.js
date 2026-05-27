@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Text } from 'react-native';
 import {
   deleteEmployee,
+  getEmployees,
   updateEmployee,
 } from '../services/odooApi';
+import { Dropdown } from 'react-native-element-dropdown';
 import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
 import ScreenShell from '../components/ScreenShell';
@@ -22,7 +24,32 @@ export default function EditEmployeeScreen({
   const [job, setJob] = useState(
     employee?.job_title || ''
   );
+  const [managerId, setManagerId] = useState(
+    Array.isArray(employee?.parent_id) ? employee.parent_id[0] : employee?.parent_id || null
+  );
+  const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    loadManagers();
+  }, []);
+
+  const loadManagers = async () => {
+    try {
+      const data = await getEmployees();
+
+      setManagers(
+        data
+          .filter((item) => item.id !== employee?.id)
+          .map((item) => ({
+            label: item.name,
+            value: item.id,
+          }))
+      );
+    } catch (error) {
+      console.log('Manager load error:', error);
+    }
+  };
 
   const handleUpdate = async () => {
     if (!employee?.id) {
@@ -37,7 +64,7 @@ export default function EditEmployeeScreen({
 
     try {
       setLoading(true);
-      await updateEmployee(employee.id, name, email, job);
+      await updateEmployee(employee.id, name, email, job, false, managerId);
       Alert.alert('Success', 'Employee updated');
       navigation.goBack();
     } catch (error) {
@@ -114,6 +141,46 @@ export default function EditEmployeeScreen({
           value={job}
           onChangeText={setJob}
           className="mt-4"
+        />
+
+        <Text className="mb-2 mt-4 text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Select Manager
+        </Text>
+
+        <Dropdown
+          containerStyle={{
+            borderRadius: 16,
+            overflow: 'hidden',
+            backgroundColor: '#0f172a',
+            borderWidth: 1,
+            borderColor: '#334155',
+          }}
+          itemContainerStyle={{
+            borderBottomWidth: 1,
+            borderBottomColor: '#1e293b',
+          }}
+          style={{
+            backgroundColor: '#0f172a',
+            borderRadius: 16,
+            padding: 14,
+            borderWidth: 1,
+            borderColor: '#334155',
+          }}
+          activeColor="#1e293b"
+          placeholderStyle={{
+            color: '#94a3b8',
+          }}
+          selectedTextStyle={{
+            color: 'white',
+          }}
+          data={managers}
+          labelField="label"
+          valueField="value"
+          placeholder="Choose Manager"
+          value={managerId}
+          onChange={(item) => {
+            setManagerId(item.value);
+          }}
         />
 
         <AppButton onPress={handleUpdate} disabled={loading} className="mt-5">
