@@ -17,6 +17,7 @@ import {
   getEmployees,
   logout,
 } from '../services/odooApi';
+import ScreenShell from '../components/ScreenShell';
 
 export default function EmployeeListScreen({
   navigation,
@@ -105,9 +106,22 @@ export default function EmployeeListScreen({
   };
 
   return (
-    <View className="flex-1 bg-slate-950 px-5 pt-4">
-      <View className="absolute -top-24 right-0 h-64 w-64 rounded-full bg-brand-500/20" />
-      <View className="absolute top-40 -left-20 h-56 w-56 rounded-full bg-emerald-500/10" />
+    <ScreenShell
+      eyebrow="Employee Hub"
+      title="Employees"
+      description="Browse, search, and update employee records."
+      rightSlot={
+        <TouchableOpacity
+          onPress={onLogout}
+          activeOpacity={0.85}
+          className="rounded-2xl bg-white/10 p-3">
+          <Ionicons
+            name="log-out-outline"
+            size={28}
+            color="white"
+          />
+        </TouchableOpacity>
+      }>
 
       <Modal
         transparent
@@ -144,35 +158,6 @@ export default function EmployeeListScreen({
         </View>
       </Modal>
 
-      <View className="mb-5 rounded-[32px] border border-white/10 bg-slate-900 p-5 shadow-2xl shadow-black/25">
-        <View className="flex-row items-start justify-between">
-          <View className="flex-1 pr-4">
-            <Text className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-300">
-              Employee Hub
-            </Text>
-
-            <Text className="mt-2 text-4xl font-black text-white">
-              Employees
-            </Text>
-
-            <Text className="mt-2 text-sm leading-6 text-slate-300">
-              Employee Management System
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={onLogout}
-            activeOpacity={0.85}
-            className="rounded-2xl bg-white/10 p-3">
-            <Ionicons
-              name="log-out-outline"
-              size={28}
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
       <TouchableOpacity
         activeOpacity={0.85}
         className="mb-4 flex-row items-center justify-center rounded-2xl bg-brand-500 px-4 py-4 shadow-lg shadow-brand-500/25"
@@ -188,7 +173,6 @@ export default function EmployeeListScreen({
       </TouchableOpacity>
 
       <TextInput
-        value={searchQuery}
         onChangeText={setSearchQuery}
         placeholder="Search employee by name"
         placeholderTextColor="#94a3b8"
@@ -242,44 +226,44 @@ export default function EmployeeListScreen({
                         className="text-lg font-bold text-white"
                         numberOfLines={2}
                         ellipsizeMode="tail">
-                    {item.name}
-                  </Text>
+                          {item.name}
+                      </Text>
 
-                  <Text
+                      <Text
                         className="mt-1 text-sm text-slate-400"
                         numberOfLines={2}
                         ellipsizeMode="tail">
-                    {item.job_title || 'No job title set'}
-                  </Text>
-                </View>
+                        {item.job_title || 'No job title set'}
+                      </Text>
+                    </View>
 
-                <View className="rounded-full bg-brand-500/15 px-3 py-1">
-                  <Text className="text-xs font-semibold text-brand-200">
-                    Edit
-                  </Text>
-                </View>
-              </View>
+                    <View className="rounded-full bg-brand-500/15 px-3 py-1">
+                      <Text className="text-xs font-semibold text-brand-200">
+                        Edit
+                      </Text>
+                    </View>
+                  </View>
 
-              <View className="mt-4 flex-row items-start">
-                <Ionicons
-                  name="mail-outline"
-                  size={18}
-                  color="#94a3b8"
-                />
+                  <View className="mt-4 flex-row items-start">
+                    <Ionicons
+                      name="mail-outline"
+                      size={18}
+                      color="#94a3b8"
+                    />
 
-                <Text
+                    <Text
                       className="ml-3 flex-1 text-sm leading-5 text-slate-300"
                       numberOfLines={3}
                       ellipsizeMode="tail">
-                  {item.work_email || 'No email set'}
-                </Text>
-                 </View>
+                      {item.work_email || 'No email set'}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </TouchableOpacity>
           )}
         />
       )}
-    </View>
+      </ScreenShell>
   );
 }

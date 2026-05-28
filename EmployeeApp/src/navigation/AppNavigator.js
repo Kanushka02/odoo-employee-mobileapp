@@ -12,7 +12,11 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login">
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: '#020617' },
+        }}>
 
          <Stack.Screen
           name="Login"
@@ -27,13 +31,11 @@ export default function AppNavigator() {
         <Stack.Screen
           name="AddEmployee"
           component={AddEmployeeScreen}
-          options={{ title: 'Add Employee' }}
         />
 
         <Stack.Screen
           name="EditEmployee"
           component={EditEmployeeScreen}
-          options={{ title: 'Edit Employee' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -98,13 +98,11 @@ export default function AddEmployeeScreen({ navigation }) {
   };
 
   return (
-    <ScreenShell>
-      <SectionCard
-        className="mb-5"
-        eyebrow="Employees"
-        title="Add Employee"
-        description="Create a new team member directly from the mobile app."
-      />
+    <ScreenShell
+      eyebrow="Employees"
+      title="Add Employee"
+      description="Create a new team member directly from the mobile app."
+    >
 
       <SectionCard className="bg-white/5" title={null} description={null} eyebrow={null}>
         <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">

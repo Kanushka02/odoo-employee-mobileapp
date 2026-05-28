@@ -63,13 +63,20 @@ export default function LoginScreen({ navigation, route }) {
   };
 
   return (
-    <ScreenShell>
-      <SectionCard
-        className="mb-8 bg-slate-900/90"
-        eyebrow="Odoo Mobile"
-        title="Login to Odoo"
-        description="Connect to your database and manage employees from a focused, mobile-first dashboard."
-      />
+    <ScreenShell
+      eyebrow="Odoo Mobile"
+      title="Login to Odoo"
+      description="Connect to your database and manage employees from a focused, mobile-first dashboard."
+    >
+      <SectionCard className="mb-8 bg-white/5" title={null} description={null} eyebrow={null}>
+        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Quick access
+        </Text>
+
+        <Text className="text-base leading-6 text-slate-300">
+          Sign in with your Odoo connection details to continue.
+        </Text>
+      </SectionCard>
 
       <SectionCard
         className="bg-white/5"
