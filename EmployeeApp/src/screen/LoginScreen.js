@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login, setConnectionConfig } from '../services/odooApi';
 import AppButton from '../components/AppButton';
@@ -65,29 +65,15 @@ export default function LoginScreen({ navigation, route }) {
   return (
     <ScreenShell
       eyebrow="Odoo Mobile"
-      title="Login to Odoo"
-      description="Connect to your database and manage employees from a focused, mobile-first dashboard."
+      title="Welcome back"
+      description="Connect to your Odoo database and manage the employee directory from one clean, mobile-first workspace."
     >
-      <SectionCard className="mb-8 bg-white/5" title={null} description={null} eyebrow={null}>
-        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
-          Quick access
-        </Text>
-
-        <Text className="text-base leading-6 text-slate-300">
-          Sign in with your Odoo connection details to continue.
-        </Text>
-      </SectionCard>
-
       <SectionCard
         className="bg-white/5"
-        title={null}
-        description={null}
-        eyebrow={null}
+        eyebrow="Connection details"
+        title="Sign in"
+        description="Enter your Odoo JSON-RPC endpoint and user credentials to start managing employees."
       >
-        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
-          Connection details
-        </Text>
-
         <AppInput
           placeholder="Odoo JSON-RPC URL"
           value={baseUrl}
@@ -116,7 +102,7 @@ export default function LoginScreen({ navigation, route }) {
           className="mt-4"
         />
 
-        <AppButton onPress={onLogin} disabled={loading} className="mt-2">
+        <AppButton onPress={onLogin} disabled={loading} className="mt-5">
           {loading ? 'Logging in...' : 'Login'}
         </AppButton>
       </SectionCard>

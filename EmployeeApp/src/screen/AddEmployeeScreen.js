@@ -101,13 +101,14 @@ export default function AddEmployeeScreen({ navigation }) {
     <ScreenShell
       eyebrow="Employees"
       title="Add Employee"
-      description="Create a new team member directly from the mobile app."
+      description="Create a new team member, assign a manager, and optionally add a profile photo."
     >
-
-      <SectionCard className="bg-white/5" title={null} description={null} eyebrow={null}>
-        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
-          Employee details
-        </Text>
+      <SectionCard
+        className="bg-white/5"
+        eyebrow="Employee details"
+        title="New profile"
+        description="Fill in the employee information that should appear in the directory."
+      >
 
         <AppInput
           placeholder="Employee Name"
@@ -130,8 +131,8 @@ export default function AddEmployeeScreen({ navigation }) {
           className="mt-4"
         />
 
-        <Text className="mb-2 mt-4 text-sm font-semibold uppercase tracking-wide text-slate-300">
-          Select Manager
+        <Text className="mb-2 mt-5 text-sm font-semibold uppercase tracking-wide text-slate-300">
+          Select manager
         </Text>
 
         <Dropdown
@@ -170,14 +171,24 @@ export default function AddEmployeeScreen({ navigation }) {
           }}
         />
 
-        <TouchableOpacity
-          onPress={pickImage}
-          className="mt-4 items-center rounded-2xl bg-blue-600 p-4"
-        >
-          <Text className="font-semibold text-white">
-            Select Employee Photo
+        <View className="mt-5 rounded-[28px] border border-white/10 bg-slate-950/70 p-4">
+          <Text className="text-sm font-semibold uppercase tracking-wide text-slate-300">
+            Profile photo
           </Text>
-        </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={pickImage}
+            className="mt-4 items-center rounded-2xl bg-brand-500 px-4 py-4"
+          >
+            <Text className="font-semibold text-white">
+              Choose employee photo
+            </Text>
+          </TouchableOpacity>
+
+          <Text className="mt-3 text-center text-xs leading-5 text-slate-400">
+            Photos make it easier for users to recognize the employee in the list.
+          </Text>
+        </View>
 
         {image ? (
           <Image

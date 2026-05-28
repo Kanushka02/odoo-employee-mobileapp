@@ -112,13 +112,14 @@ export default function EditEmployeeScreen({
     <ScreenShell
       eyebrow="Employees"
       title="Edit Employee"
-      description="Update details or remove the record from Odoo."
+      description="Update details, adjust reporting lines, or remove the record from Odoo."
     >
-
-      <SectionCard className="bg-white/5" title={null} description={null} eyebrow={null}>
-        <Text className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-300">
-          Employee details
-        </Text>
+      <SectionCard
+        className="bg-white/5"
+        eyebrow="Edit profile"
+        title="Details"
+        description="Update the employee profile fields below and save changes to Odoo."
+      >
 
         <AppInput
           placeholder="Employee Name"
