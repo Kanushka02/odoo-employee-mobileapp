@@ -55,6 +55,7 @@ export default function ScreenShell({
       {scrollable ? (
         <ScrollView
           className="flex-1"
+          nestedScrollEnabled
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ flexGrow: 1 }}>
           {content}

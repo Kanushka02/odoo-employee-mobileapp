@@ -9,7 +9,7 @@ export default function SectionCard({
   className = '',
 }) {
   return (
-    <View className={`overflow-hidden rounded-[32px] border border-white/10 bg-slate-900/95 p-5 shadow-2xl shadow-black/25 ${className}`}>
+    <View className={`rounded-[32px] border border-white/10 bg-slate-900/95 p-5 shadow-2xl shadow-black/25 ${className}`}>
       <View className="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-brand-500/10" />
       {eyebrow ? (
         <View className="mb-3 self-start rounded-full border border-brand-400/20 bg-brand-500/10 px-3 py-1">

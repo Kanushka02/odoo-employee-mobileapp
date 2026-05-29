@@ -158,8 +158,11 @@ export default function AddEmployeeScreen({ navigation }) {
           placeholderStyle={{
             color: '#94a3b8',
           }}
+          itemTextStyle={{
+            color: '#e2e8f0',  
+          }}
           selectedTextStyle={{
-            color: 'white',
+            color: '#22d3ee',  
           }}
           data={employees}
           labelField="label"
