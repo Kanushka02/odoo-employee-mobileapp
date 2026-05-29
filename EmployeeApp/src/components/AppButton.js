@@ -15,15 +15,15 @@ export default function AppButton({
   className = '',
 }) {
   const resolvedVariant = variants[variant] || variants.primary;
-  const disabledClassName = disabled ? 'opacity-60' : '';
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.85}
-      className={`rounded-2xl px-4 py-4 ${resolvedVariant} ${disabledClassName} ${className}`}>
-      <Text className="text-center text-base font-semibold text-white">
+      style={disabled ? { opacity: 0.6 } : null}
+      className={`flex-row items-center justify-center rounded-2xl px-4 py-4 shadow-lg shadow-black/20 ${resolvedVariant} ${className}`}>
+      <Text className="text-center text-base font-semibold tracking-wide text-white">
         {children}
       </Text>
     </TouchableOpacity>

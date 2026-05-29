@@ -10,13 +10,15 @@ import {
   Modal,
   RefreshControl,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
 
 import {
   getEmployees,
   logout,
 } from '../services/odooApi';
+import ScreenShell from '../components/ScreenShell';
+import AppButton from '../components/AppButton';
+import AppInput from '../components/AppInput';
 
 export default function EmployeeListScreen({
   navigation,
@@ -105,25 +107,42 @@ export default function EmployeeListScreen({
   };
 
   return (
-    <View className="flex-1 bg-slate-950 px-5 pt-4">
-      <View className="absolute -top-24 right-0 h-64 w-64 rounded-full bg-brand-500/20" />
-      <View className="absolute top-40 -left-20 h-56 w-56 rounded-full bg-emerald-500/10" />
+    <ScreenShell
+      eyebrow="Employee Hub"
+      title="Employees"
+      description="Browse, search, and update employee records without leaving the mobile dashboard."
+      scrollable={false}
+      rightSlot={
+        <TouchableOpacity
+          onPress={onLogout}
+          activeOpacity={0.85}
+          className="rounded-2xl bg-white/10 p-3">
+          <Ionicons
+            name="log-out-outline"
+            size={28}
+            color="white"
+          />
+        </TouchableOpacity>
+      }>
 
       <Modal
         transparent
         visible={logoutDialogVisible}
         animationType="fade"
         onRequestClose={() => setLogoutDialogVisible(false)}>
-        <View className="flex-1 justify-center bg-black/50 px-6">
-          <View className="rounded-[28px] border border-white/10 bg-slate-900 p-6">
-            <Text className="mb-2 text-xl font-bold text-white">
-              Confirm Logout
+        <View className="flex-1 justify-center bg-black/60 px-6">
+          <View className="rounded-[30px] border border-white/10 bg-slate-900 p-6 shadow-2xl shadow-black/50">
+            <Text className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-300">
+              Session action
             </Text>
-            <Text className="mb-5 text-sm leading-6 text-slate-300">
-              Are you sure you want to logout?
+            <Text className="mt-3 text-2xl font-black text-white">
+              Confirm logout
+            </Text>
+            <Text className="mt-3 text-sm leading-6 text-slate-300">
+              You will return to the login screen and need to sign in again to access employee data.
             </Text>
 
-            <View className="flex-row gap-3">
+            <View className="mt-6 flex-row gap-3">
               <TouchableOpacity
                 className="flex-1 rounded-2xl bg-slate-200 px-4 py-3"
                 onPress={() => setLogoutDialogVisible(false)}>
@@ -144,142 +163,113 @@ export default function EmployeeListScreen({
         </View>
       </Modal>
 
-      <View className="mb-5 rounded-[32px] border border-white/10 bg-slate-900 p-5 shadow-2xl shadow-black/25">
-        <View className="flex-row items-start justify-between">
-          <View className="flex-1 pr-4">
-            <Text className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-300">
-              Employee Hub
-            </Text>
+      <AppButton
+        onPress={() => navigation.navigate('AddEmployee')}
+        className="mb-4">
+        Add Employee
+      </AppButton>
 
-            <Text className="mt-2 text-4xl font-black text-white">
-              Employees
-            </Text>
-
-            <Text className="mt-2 text-sm leading-6 text-slate-300">
-              Employee Management System
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={onLogout}
-            activeOpacity={0.85}
-            className="rounded-2xl bg-white/10 p-3">
-            <Ionicons
-              name="log-out-outline"
-              size={28}
-              color="white"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <TouchableOpacity
-        activeOpacity={0.85}
-        className="mb-4 flex-row items-center justify-center rounded-2xl bg-brand-500 px-4 py-4 shadow-lg shadow-brand-500/25"
-        onPress={() => navigation.navigate('AddEmployee')}>
-        <Ionicons
-          name="add"
-          size={20}
-          color="white"
-        />
-        <Text className="ml-2 text-base font-semibold text-white">
-          Add Employee
-        </Text>
-      </TouchableOpacity>
-
-      <TextInput
+      <AppInput
         value={searchQuery}
         onChangeText={setSearchQuery}
         placeholder="Search employee by name"
-        placeholderTextColor="#94a3b8"
         autoCapitalize="none"
         autoCorrect={false}
-        className="mb-4 rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-base text-white"
+        className="mb-4"
       />
 
-      {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#2563eb" />
-          <Text className="mt-3 text-slate-300">
-            Loading employees...
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={filteredEmployees}
-          keyExtractor={(item) => item.id.toString()}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => loadEmployees(true)}
-            />
-          }
-          className="flex-1"
-          ListFooterComponent={<View className="h-24" />}
-          ListEmptyComponent={
-            <View className="mt-8 rounded-[28px] border border-dashed border-white/10 bg-white/5 px-6 py-10">
-              <Text className="text-center text-base text-slate-300">
-                {searchQuery ? 'No employees match your search.' : 'No employees found.'}
-              </Text>
-            </View>
-          }
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              activeOpacity={0.85}
-              className="mb-3 rounded-[28px] border border-white/10 bg-slate-900 p-4 shadow-xl shadow-black/15"
-              onPress={() =>
-                navigation.navigate('EditEmployee', {
-                  employee: item,
-                })
-              }>
-              <View className="flex-row items-start">
-                {renderEmployeeAvatar(item)}
-
-                <View className="ml-4 flex-1 pr-2">
-                  <View className="flex-row items-start justify-between gap-3">
-                    <View className="flex-1">
-                      <Text
-                        className="text-lg font-bold text-white"
-                        numberOfLines={2}
-                        ellipsizeMode="tail">
-                    {item.name}
-                  </Text>
-
-                  <Text
-                        className="mt-1 text-sm text-slate-400"
-                        numberOfLines={2}
-                        ellipsizeMode="tail">
-                    {item.job_title || 'No job title set'}
-                  </Text>
-                </View>
-
-                <View className="rounded-full bg-brand-500/15 px-3 py-1">
-                  <Text className="text-xs font-semibold text-brand-200">
-                    Edit
-                  </Text>
-                </View>
-              </View>
-
-              <View className="mt-4 flex-row items-start">
-                <Ionicons
-                  name="mail-outline"
-                  size={18}
-                  color="#94a3b8"
-                />
-
-                <Text
-                      className="ml-3 flex-1 text-sm leading-5 text-slate-300"
-                      numberOfLines={3}
-                      ellipsizeMode="tail">
-                  {item.work_email || 'No email set'}
+      <View className="flex-1">
+        {loading ? (
+          <View className="flex-1 items-center justify-center rounded-[28px] border border-white/10 bg-white/5 px-6">
+            <ActivityIndicator size="large" color="#22d3ee" />
+            <Text className="mt-4 text-base font-semibold text-white">
+              Loading employees...
+            </Text>
+            <Text className="mt-2 text-center text-sm leading-6 text-slate-300">
+              Pulling the latest team records from Odoo.
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={filteredEmployees}
+            keyExtractor={(item) => item.id.toString()}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => loadEmployees(true)}
+                tintColor="#22d3ee"
+              />
+            }
+            className="flex-1"
+            ListFooterComponent={<View className="h-24" />}
+            ListEmptyComponent={
+              <View className="rounded-[28px] border border-dashed border-white/10 bg-white/5 px-6 py-10">
+                <Text className="text-center text-base font-semibold text-white">
+                  {searchQuery ? 'No employees match your search.' : 'No employees found.'}
                 </Text>
-                 </View>
-                </View>
+                <Text className="mt-2 text-center text-sm leading-6 text-slate-300">
+                  Try a different name or add the first employee from the button above.
+                </Text>
               </View>
-            </TouchableOpacity>
-          )}
-        />
-      )}
-    </View>
+            }
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                activeOpacity={0.85}
+                className="mb-3 rounded-[28px] border border-white/10 bg-slate-900 p-4 shadow-xl shadow-black/15"
+                onPress={() =>
+                  navigation.navigate('EditEmployee', {
+                    employee: item,
+                  })
+                }>
+                <View className="flex-row items-start">
+                  {renderEmployeeAvatar(item)}
+
+                  <View className="ml-4 flex-1 pr-2">
+                    <View className="flex-row items-start justify-between gap-3">
+                      <View className="flex-1">
+                        <Text
+                          className="text-lg font-bold text-white"
+                          numberOfLines={2}
+                          ellipsizeMode="tail">
+                          {item.name}
+                        </Text>
+
+                        <Text
+                          className="mt-1 text-sm text-slate-400"
+                          numberOfLines={2}
+                          ellipsizeMode="tail">
+                          {item.job_title || 'No job title set'}
+                        </Text>
+                      </View>
+
+                      <View className="rounded-full bg-brand-500/15 px-3 py-1">
+                        <Text className="text-xs font-semibold text-brand-200">
+                          Edit
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View className="mt-4 flex-row items-start">
+                      <Ionicons
+                        name="mail-outline"
+                        size={18}
+                        color="#94a3b8"
+                      />
+
+                      <Text
+                        className="ml-3 flex-1 text-sm leading-5 text-slate-300"
+                        numberOfLines={3}
+                        ellipsizeMode="tail">
+                        {item.work_email || 'No email set'}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        )}
+      </View>
+    </ScreenShell>
   );
 }

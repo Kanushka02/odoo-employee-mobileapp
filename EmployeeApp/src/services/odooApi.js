@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from '../config/config';
 
-
-
 let DEFAULT_DB = '';
 let DEFAULT_USERNAME = null;
 let DEFAULT_PASSWORD = '';
@@ -23,6 +21,32 @@ export const setConnectionConfig = (config = {}) => {
   db = config.db || DEFAULT_DB;
   username = config.username || DEFAULT_USERNAME;
   password = config.password || DEFAULT_PASSWORD;
+};
+
+export const getDatabases = async (serverUrl) => {
+  try {
+    const response = await axios.post(serverUrl, {
+      jsonrpc: '2.0',
+      method: 'call',
+      params: {
+        service: 'db',
+        method: 'list',
+        args: [],
+      },
+      id: 0,
+    });
+
+    if (response.data?.error) {
+      const message = response.data.error?.data?.message || response.data.error?.message || 'Unable to list databases.';
+      throw new Error(message);
+    }
+
+    const databases = response.data?.result || [];
+    return Array.isArray(databases) ? databases : [];
+  } catch (error) {
+    console.log('Get Databases Error:', error);
+    throw error;
+  }
 };
 
 export const login = async (credentials = {}) => {
@@ -83,7 +107,9 @@ export const getEmployees = async () => {
               'name',
               'work_email',
               'job_title',
-              'image_1920'
+              'image_1920',
+              'parent_id',
+
             ],
           },
         ],
@@ -108,7 +134,8 @@ export const createEmployee = async (
   name,
   email,
   job,
-  imageBase64 = false
+  imageBase64 = false,
+  managerId = false
 ) => {
   try {
     const response = await axios.post(baseUrl, {
@@ -128,8 +155,8 @@ export const createEmployee = async (
               name: name,
               work_email: email,
               job_title: job,
-
               image_1920: imageBase64,
+              parent_id: managerId || false
             },
           ],
         ],
@@ -150,13 +177,15 @@ export const updateEmployee = async (
   name,
   email,
   job,
-  imageBase64 = false
+  imageBase64 = false,
+  managerId = false
 ) => {
   try {
     const values = {
       name: name,
       work_email: email,
       job_title: job,
+      parent_id: managerId || false,
     };
 
     if (imageBase64) {
